@@ -1,144 +1,226 @@
 # Secure IoT Monitoring Platform
 
-**Created by HAMAILI Ahmed-Imad**
+<p align="center">
+  <img src="docs/screenshots/grafana.png" alt="Grafana IoT Metrics Dashboard" width="900">
+</p>
 
-A secure and containerized IoT monitoring platform for collecting, storing, visualizing and analyzing telemetry from connected devices.
+<p align="center">
+  <strong>Secure, observable and containerized IoT monitoring platform built with MQTT, FastAPI, PostgreSQL, Vue, Prometheus and Grafana.</strong>
+</p>
 
-This project demonstrates a realistic end-to-end IoT architecture built around MQTT, FastAPI, PostgreSQL, Docker, Prometheus, Grafana and a Vue dashboard. It is designed to show how networked systems, backend engineering, cybersecurity, DevOps, observability and embedded IoT concepts can work together in one complete platform.
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.12-blue" alt="Python">
+  <img src="https://img.shields.io/badge/FastAPI-Backend-009688" alt="FastAPI">
+  <img src="https://img.shields.io/badge/Vue.js-Frontend-42b883" alt="Vue">
+  <img src="https://img.shields.io/badge/MQTT-IoT-orange" alt="MQTT">
+  <img src="https://img.shields.io/badge/Docker-Compose-2496ED" alt="Docker">
+  <img src="https://img.shields.io/badge/Prometheus-Monitoring-E6522C" alt="Prometheus">
+  <img src="https://img.shields.io/badge/Grafana-Observability-F46800" alt="Grafana">
+</p>
 
-## Project purpose
+---
 
-Most IoT demos stop at sending random sensor values to a dashboard. This project goes further by adding the components that are usually expected in a professional platform:
+## Overview
 
-- registered devices with API keys
-- telemetry ingestion over MQTT
-- backend validation before storage
-- anomaly detection rules
-- REST APIs for dashboards and integrations
-- PostgreSQL persistence
-- Prometheus-compatible metrics
-- Grafana dashboard provisioning
-- Docker Compose deployment
-- a clean Vue interface for monitoring
-- technical documentation explaining the architecture and code flow
+**Secure IoT Monitoring Platform** is a complete IoT monitoring project designed to simulate, collect, store, expose and visualize telemetry data from connected devices.
 
-The current version is intentionally simple enough to run locally, but the repository is structured like a real platform so it can be extended step by step.
+The platform demonstrates how IoT, backend engineering, networking, DevOps, observability and security concepts can be combined into a single end-to-end system.
+
+It includes:
+
+- an MQTT broker for IoT communication;
+- a Python IoT simulator publishing device telemetry;
+- a FastAPI backend consuming MQTT messages;
+- a PostgreSQL database for telemetry persistence;
+- a Vue.js dashboard for real-time device visualization;
+- Prometheus metrics for monitoring;
+- Grafana dashboards for IoT and backend observability;
+- Docker Compose orchestration for local deployment.
+
+This project was built as a portfolio-grade engineering project by **HAMAILI Ahmed-Imad**.
+
+---
+
+## Project Preview
+
+### IoT Monitoring Dashboard
+
+![IoT Monitoring Dashboard](docs/screenshots/dashboard.png)
+
+### Device Telemetry Details
+
+![Device Telemetry Details](docs/screenshots/dashboard-details.png)
+
+### FastAPI Documentation
+
+![FastAPI Documentation](docs/screenshots/api.png)
+
+### Grafana IoT Metrics Dashboard
+
+![Grafana IoT Metrics Dashboard](docs/screenshots/grafana.png)
+
+### Prometheus Targets
+
+![Prometheus Targets](docs/screenshots/prometheus.png)
+
+---
+
+## Main Features
+
+### IoT Data Pipeline
+
+- Simulated IoT devices publish telemetry through MQTT.
+- Mosquitto acts as the MQTT broker.
+- FastAPI subscribes to MQTT topics and processes incoming messages.
+- PostgreSQL stores validated telemetry data.
+
+### Backend API
+
+- REST API built with FastAPI.
+- Automatic OpenAPI documentation.
+- Endpoints for latest measurements, device data and platform health.
+- Structured codebase with services, schemas, models and routes.
+
+### Frontend Dashboard
+
+- Vue.js dashboard for visualizing connected devices.
+- Real-time telemetry display.
+- Device status, battery, temperature, humidity and RSSI indicators.
+- Clean and responsive interface.
+
+### Observability
+
+- Prometheus scrapes backend metrics.
+- Grafana visualizes both system and IoT-specific metrics.
+- Custom IoT metrics include temperature, humidity, battery, RSSI, active devices and MQTT ingestion activity.
+
+### DevOps
+
+- Full Docker Compose deployment.
+- Independent services for backend, frontend, MQTT, PostgreSQL, Prometheus, Grafana and simulator.
+- Reproducible local environment.
+- Ready to be extended with CI/CD and Kubernetes.
+
+---
 
 ## Architecture
 
 ```txt
-IoT Device Simulator
-        |
-        | MQTT telemetry
-        v
-Eclipse Mosquitto Broker
-        |
-        | MQTT subscription
-        v
-FastAPI Ingestion Backend
-        |
-        | validated SQL writes
-        v
-PostgreSQL Database
-        |
-        | REST API
-        v
-Vue Monitoring Dashboard
++---------------------+
+|   IoT Simulator     |
+|  Python devices     |
++----------+----------+
+           |
+           | MQTT telemetry
+           v
++---------------------+
+|  Mosquitto Broker   |
+| MQTT communication  |
++----------+----------+
+           |
+           | MQTT subscription
+           v
++---------------------+
+|   FastAPI Backend   |
+| API + MQTT consumer |
++----------+----------+
+           |
+           | SQL persistence
+           v
++---------------------+
+|    PostgreSQL DB    |
+| Telemetry storage   |
++---------------------+
 
-FastAPI Backend
-        |
-        | /metrics
-        v
-Prometheus
-        |
-        | datasource
-        v
-Grafana Dashboard
+Monitoring Flow:
+
+FastAPI /metrics
+      |
+      v
+ Prometheus
+      |
+      v
+ Grafana
 ```
 
-## Tech stack
+---
 
-| Area | Tools |
-| --- | --- |
-| IoT messaging | MQTT, Eclipse Mosquitto |
-| Backend | Python, FastAPI, SQLAlchemy |
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | Vue.js, TypeScript, Bootstrap |
+| Backend | FastAPI, Python |
+| Messaging | MQTT, Eclipse Mosquitto |
 | Database | PostgreSQL |
-| Frontend | Vue 3, TypeScript, Bootstrap 5 |
-| Observability | Prometheus, Grafana, FastAPI metrics |
-| DevOps | Docker Compose, GitHub Actions |
-| Security | Device API keys, payload validation, isolated services |
+| Monitoring | Prometheus |
+| Visualization | Grafana |
+| DevOps | Docker Compose |
+| Metrics | prometheus-client |
+| Simulation | Python IoT device simulator |
 
-## Features
+---
 
-- Simulated ESP32/Raspberry Pi/industrial sensors
-- MQTT telemetry ingestion
-- Device registry with hashed API keys
-- Measurement storage in PostgreSQL
-- Latest measurements endpoint
-- Per-device measurement history
-- Alert generation for abnormal values
-- System summary endpoint
-- Prometheus metrics endpoint
-- Provisioned Grafana monitoring dashboard
-- Responsive Vue dashboard
-- Dockerized local environment
+## Getting Started
 
-## Quick start
+### Prerequisites
 
-### 1. Clone the repository
+Make sure you have:
+
+- Docker Desktop installed;
+- Docker Compose available;
+- Git installed.
+
+### Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/secure-iot-monitoring-platform.git
+git clone https://github.com/doditpiot/secure-iot-monitoring-platform.git
 cd secure-iot-monitoring-platform
 ```
 
-### 2. Start the platform
+### Start the platform
 
 ```bash
 docker compose up --build
 ```
 
-### 3. Open the services
+The first launch may take a few minutes because Docker needs to build the backend, frontend and simulator images.
+
+---
+
+## Local Services
 
 | Service | URL |
-| --- | --- |
-| Vue dashboard | http://localhost:5173 |
-| FastAPI docs | http://localhost:8000/docs |
-| API health | http://localhost:8000/health |
-| Prometheus metrics | http://localhost:8000/metrics |
-| Prometheus UI | http://localhost:9090 |
-| Grafana dashboard | http://localhost:3001 |
+|---|---|
+| Vue Dashboard | http://localhost:5173 |
+| FastAPI Documentation | http://localhost:8000/docs |
+| Backend Health Check | http://localhost:8000/health |
+| Latest Measurements | http://localhost:8000/measurements/latest |
+| Prometheus | http://localhost:9090 |
+| Grafana | http://localhost:3001 |
 
-## Grafana access
-
-Default Grafana credentials for local development:
-
-| Field | Value |
-| --- | --- |
-| URL | http://localhost:3001 |
-| Username | `admin` |
-| Password | `admin` |
-
-The default dashboard is available in:
+Grafana default credentials:
 
 ```txt
-Dashboards > Secure IoT Monitoring > Secure IoT Monitoring Overview
+Username: admin
+Password: admin
 ```
 
-## Default simulated devices
+---
 
-The simulator publishes telemetry for the following devices:
+## API Endpoints
 
-| Device ID | Demo key |
-| --- | --- |
-| `esp32-room-01` | `room-01-demo-key` |
-| `esp32-room-02` | `room-02-demo-key` |
-| `raspberry-lab-01` | `raspberry-lab-demo-key` |
-| `industrial-sensor-01` | `industrial-sensor-demo-key` |
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/health` | Check backend health |
+| GET | `/measurements/latest` | Get latest telemetry measurements |
+| GET | `/measurements/devices/{device_id}` | Get measurements for a specific device |
+| GET | `/devices` | List registered devices |
+| GET | `/metrics` | Expose Prometheus-compatible metrics |
 
-In a real deployment, these keys would be generated per device, rotated regularly and stored outside the repository.
+---
 
-## Example MQTT payload
+## Example Telemetry Payload
 
 ```json
 {
@@ -149,66 +231,190 @@ In a real deployment, these keys would be generated per device, rotated regularl
   "battery": 87.5,
   "rssi": -62,
   "status": "online",
-  "timestamp": "2026-06-17T12:00:00Z"
+  "timestamp": "2026-06-18T12:00:00Z"
 }
 ```
 
-## API endpoints
+---
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| GET | `/health` | Service and database health |
-| GET | `/devices` | List registered devices |
-| POST | `/devices` | Register a new device |
-| GET | `/measurements/latest` | Latest telemetry values |
-| GET | `/measurements/devices/{device_id}` | Telemetry history for one device |
-| GET | `/alerts` | Generated alerts |
-| GET | `/stats/summary` | Platform summary |
-| GET | `/metrics` | Prometheus metrics |
+## Prometheus Metrics
 
-## Repository structure
+The backend exposes Prometheus metrics on:
+
+```txt
+http://localhost:8000/metrics
+```
+
+Main IoT metrics:
+
+```txt
+secure_iot_device_temperature_celsius
+secure_iot_device_humidity_percent
+secure_iot_device_battery_percent
+secure_iot_device_rssi_dbm
+secure_iot_device_online
+secure_iot_active_devices_total
+secure_iot_mqtt_messages_total
+secure_iot_stored_measurements_total
+secure_iot_rejected_messages_total
+secure_iot_generated_alerts_total
+```
+
+These metrics are scraped by Prometheus and displayed in Grafana.
+
+---
+
+## Grafana Dashboard
+
+The project includes a preconfigured Grafana dashboard.
+
+After starting the platform, open:
+
+```txt
+http://localhost:3001
+```
+
+Then go to:
+
+```txt
+Dashboards > Secure IoT Monitoring > Secure IoT Monitoring Overview
+```
+
+The dashboard displays:
+
+- average temperature;
+- average humidity;
+- average battery level;
+- average RSSI;
+- temperature by device;
+- humidity by device;
+- battery level by device;
+- signal strength by device;
+- MQTT ingestion rate;
+- stored measurement rate;
+- rejected message rate;
+- backend memory usage;
+- backend CPU time.
+
+---
+
+## Project Structure
 
 ```txt
 secure-iot-monitoring-platform/
-├── backend/              # FastAPI application
-├── frontend/             # Vue 3 dashboard
-├── iot-simulator/        # MQTT telemetry generator
-├── mqtt/                 # Mosquitto configuration
-├── monitoring/           # Prometheus and Grafana configuration
-├── docs/                 # Architecture, security and technical notes
+├── backend/
+│   ├── app/
+│   │   ├── api/
+│   │   ├── core/
+│   │   ├── db/
+│   │   ├── models/
+│   │   ├── schemas/
+│   │   ├── services/
+│   │   └── main.py
+│   ├── tests/
+│   ├── Dockerfile
+│   └── requirements.txt
+│
+├── frontend/
+│   ├── src/
+│   ├── Dockerfile
+│   └── package.json
+│
+├── iot-simulator/
+│   ├── simulator.py
+│   ├── Dockerfile
+│   └── requirements.txt
+│
+├── mqtt/
+│   └── mosquitto.conf
+│
+├── monitoring/
+│   ├── prometheus.yml
+│   └── grafana/
+│       ├── provisioning/
+│       └── dashboards/
+│
+├── docs/
+│   ├── screenshots/
+│   ├── architecture.md
+│   ├── security.md
+│   ├── roadmap.md
+│   └── technical-documentation.md
+│
 ├── docker-compose.yml
+├── .env.example
+├── .gitignore
 └── README.md
 ```
 
-## Documentation
+---
 
-The `docs/` folder contains extra explanations:
+## Security Notes
 
-- `architecture.md` explains the service responsibilities and data flow.
-- `security.md` explains the current security model and production hardening ideas.
-- `roadmap.md` shows the next planned improvements.
-- `technical-documentation.md` explains the code structure, main functions and extension points.
+This project is a local demonstration platform, not a production-ready deployment.
 
-## Development commands
+Current security-related concepts:
 
-```bash
-# Start everything
-docker compose up --build
+- device identification;
+- device key validation;
+- rejected message tracking;
+- environment-based configuration;
+- separated services;
+- documented MQTT and backend flows.
 
-# Stop services
-docker compose down
+Future security improvements:
 
-# Stop and remove database/Grafana volumes
-docker compose down -v
+- MQTT authentication;
+- MQTT ACLs;
+- JWT authentication for the API;
+- hashed device keys;
+- role-based access control;
+- rate limiting;
+- TLS for exposed services;
+- alerting on suspicious telemetry activity.
 
-# Run backend tests locally from backend/
-pytest
-```
+---
 
-## Notes about comments
+## Why This Project Matters
 
-The code contains English comments and docstrings explaining the main design decisions, functions and service responsibilities. JSON files are intentionally kept as valid JSON, because standard JSON does not support comments.
+This project demonstrates practical engineering skills across several domains:
 
-## Project goal
+- IoT communication with MQTT;
+- backend API design with FastAPI;
+- database modeling with PostgreSQL;
+- real-time telemetry ingestion;
+- Docker-based deployment;
+- monitoring with Prometheus;
+- visualization with Grafana;
+- frontend dashboard development with Vue.js;
+- security-aware system design;
+- observability and metrics engineering.
 
-The goal of this project is to demonstrate how secure networked systems can be designed across IoT, cloud infrastructure, distributed architecture, cybersecurity, DevOps and AI-ready monitoring.
+The goal is not only to build an application, but to show how a complete connected system can be designed, deployed, monitored and extended.
+
+---
+
+## Roadmap
+
+Planned improvements:
+
+- JWT authentication;
+- MQTT authentication and ACLs;
+- device management interface;
+- alerting rules in Grafana;
+- AI-based anomaly detection;
+- historical charts in the Vue dashboard;
+- Kubernetes deployment;
+- GitHub Actions CI/CD;
+- automated backend tests;
+- production deployment documentation.
+
+---
+
+## Author
+
+**HAMAILI Ahmed-Imad**
+
+Software and systems engineering profile focused on networks, distributed systems, cloud/DevOps, cybersecurity, embedded IoT and AI-driven solutions.
+
+GitHub: [doditpiot](https://github.com/doditpiot)
