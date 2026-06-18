@@ -1,0 +1,11 @@
+# Backend dependencies
+# Author: HAMAILI Ahmed-Imad
+
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+SQLAlchemy==2.0.36
+psycopg2-binary==2.9.10
+pydantic-settings==2.7.1
+paho-mqtt==1.6.1
+python-dotenv==1.0.1
+prometheus-client==0.21.1

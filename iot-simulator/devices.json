@@ -1,0 +1,22 @@
+[
+  {
+    "device_id": "esp32-room-01",
+    "device_key": "room-01-demo-key",
+    "profile": "indoor"
+  },
+  {
+    "device_id": "esp32-room-02",
+    "device_key": "room-02-demo-key",
+    "profile": "indoor"
+  },
+  {
+    "device_id": "raspberry-lab-01",
+    "device_key": "raspberry-lab-demo-key",
+    "profile": "edge-gateway"
+  },
+  {
+    "device_id": "industrial-sensor-01",
+    "device_key": "industrial-sensor-demo-key",
+    "profile": "industrial"
+  }
+]

@@ -1,0 +1,123 @@
+# Secure IoT Monitoring Platform
+# Author: HAMAILI Ahmed-Imad
+#
+# This Compose file starts the full local stack: database, MQTT broker, backend,
+# simulator, frontend and observability tools.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    platform: linux/amd64
+    container_name: secure_iot_postgres
+    environment:
+      POSTGRES_USER: iot_user
+      POSTGRES_PASSWORD: iot_password
+      POSTGRES_DB: iot_monitoring
+    ports:
+      # The host port is 5433 to avoid conflicts with a local PostgreSQL installation.
+      - "5433:5432"
+    volumes:
+      # The database volume keeps telemetry data between restarts.
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U iot_user -d iot_monitoring"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  mqtt:
+    image: eclipse-mosquitto:2
+    container_name: secure_iot_mqtt
+    ports:
+      - "1883:1883"
+    volumes:
+      # Mosquitto reads its listener and persistence settings from this file.
+      - ./mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+    container_name: secure_iot_backend
+    environment:
+      DATABASE_URL: postgresql+psycopg2://iot_user:iot_password@postgres:5432/iot_monitoring
+      MQTT_HOST: mqtt
+      MQTT_PORT: 1883
+      MQTT_TELEMETRY_TOPIC: iot/+/telemetry
+      CORS_ORIGINS: '["http://localhost:5173","http://127.0.0.1:5173"]'
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mqtt:
+        condition: service_started
+    restart: unless-stopped
+
+  iot-simulator:
+    build:
+      context: ./iot-simulator
+    container_name: secure_iot_simulator
+    environment:
+      MQTT_HOST: mqtt
+      MQTT_PORT: 1883
+      MQTT_PUBLISH_INTERVAL: 2
+    depends_on:
+      mqtt:
+        condition: service_started
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8000
+    container_name: secure_iot_frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      backend:
+        condition: service_started
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    platform: linux/amd64
+    container_name: secure_iot_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      # Prometheus scrapes the FastAPI backend through the Docker network.
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    depends_on:
+      backend:
+        condition: service_started
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana-oss:11.4.0
+    platform: linux/amd64
+    container_name: secure_iot_grafana
+    ports:
+      # Grafana listens on 3000 inside the container. The host uses 3001 to avoid local conflicts.
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      prometheus:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  grafana_data:

@@ -1,0 +1,14 @@
+# Grafana dashboard provisioning
+# Author: HAMAILI Ahmed-Imad
+
+apiVersion: 1
+
+providers:
+  - name: Secure IoT Dashboards
+    orgId: 1
+    folder: Secure IoT Monitoring
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards

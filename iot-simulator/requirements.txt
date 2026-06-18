@@ -1,0 +1,4 @@
+# IoT simulator dependency
+# Author: HAMAILI Ahmed-Imad
+
+paho-mqtt==1.6.1
